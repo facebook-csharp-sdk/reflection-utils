@@ -2,6 +2,7 @@
 
 using System;
 #if REFLECTION_EMIT
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 #endif
@@ -14,8 +15,6 @@ namespace ReflectionUtils
 
     internal class ReflectionUtils
     {
-        public readonly static ReflectionUtils Instance = new ReflectionUtils();
-
         public static GetHandler CreateGetHandler(Type type, FieldInfo fieldInfo)
         {
             DynamicMethod dynamicGet = new DynamicMethod("DynamicGet", typeof(object), new[] { typeof(object) }, type, true);
@@ -94,6 +93,7 @@ namespace ReflectionUtils
 #if REFLECTION_EMIT
         readonly SafeDictionary<Type, CtorDelegate> _constructorCache = new SafeDictionary<Type, CtorDelegate>();
 #endif
+
         public object GetNewInstance(Type type)
         {
 #if REFLECTION_EMIT
@@ -111,6 +111,30 @@ namespace ReflectionUtils
 #else
             return Activator.CreateInstance(type);
 #endif
+        }
+    }
+
+    sealed class MemberMap
+    {
+        public readonly MemberInfo MemberInfo;
+        public readonly Type Type;
+        public readonly GetHandler Getter;
+        public readonly SetHandler Setter;
+
+        public MemberMap(PropertyInfo propertyInfo)
+        {
+            MemberInfo = propertyInfo;
+            Type = propertyInfo.PropertyType;
+            Getter = ReflectionUtils.CreateGetHandler(Type, propertyInfo);
+            Setter = ReflectionUtils.CreateSetHandler(Type, propertyInfo);
+        }
+
+        public MemberMap(FieldInfo fieldInfo)
+        {
+            MemberInfo = fieldInfo;
+            Type = fieldInfo.FieldType;
+            Getter = ReflectionUtils.CreateGetHandler(Type, fieldInfo);
+            Setter = ReflectionUtils.CreateSetHandler(Type, fieldInfo);
         }
     }
 }
