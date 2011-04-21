@@ -10,6 +10,8 @@
         // StringField
         private string stringField;
 
+        private string stringProperty { get; set; }
+
         // CreateInstance
         internal static SimpleClass CreateInstance()
         {
