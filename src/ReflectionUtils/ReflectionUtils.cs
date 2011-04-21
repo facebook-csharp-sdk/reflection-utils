@@ -39,12 +39,27 @@ namespace ReflectionUtils
             CtorDelegate c;
             if (_constructorCache.TryGetValue(type, out c))
                 return c();
-            DynamicMethod dynMethod = new DynamicMethod("_", type, null);
-            ILGenerator ilGen = dynMethod.GetILGenerator();
+            DynamicMethod dynamicMethod = new DynamicMethod("Create" + type.FullName, typeof(object), Type.EmptyTypes, type, true);
+            dynamicMethod.InitLocals = true;
+            ILGenerator generator = dynamicMethod.GetILGenerator();
 
-            ilGen.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
-            ilGen.Emit(OpCodes.Ret);
-            c = (CtorDelegate)dynMethod.CreateDelegate(typeof(CtorDelegate));
+            if (type.IsValueType)
+            {
+                generator.DeclareLocal(type);
+                generator.Emit(OpCodes.Ldloc_0);
+                generator.Emit(OpCodes.Box, type);
+            }
+            else
+            {
+                ConstructorInfo constructorInfo =
+                    type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null,
+                                        Type.EmptyTypes, null);
+                if (constructorInfo == null)
+                    throw new Exception(string.Format("Could not get constructor for {0}.", type));
+                generator.Emit(OpCodes.Newobj, constructorInfo);
+            }
+            generator.Emit(OpCodes.Ret);
+            c = (CtorDelegate)dynamicMethod.CreateDelegate(typeof(CtorDelegate));
             _constructorCache.Add(type, c);
             return c();
 #else
