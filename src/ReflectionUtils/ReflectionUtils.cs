@@ -8,42 +8,15 @@ using System.Reflection.Emit;
 
 namespace ReflectionUtils
 {
-#if REFLECTION_EMIT
-    delegate object CtorDelegate();
-#endif
+    internal delegate object GetHandler(object source);
 
-    public delegate object GetHandler(object source);
+    internal delegate void SetHandler(object source, object value);
 
-    public delegate void SetHandler(object source, object value);
-
-    public class ReflectionUtils
+    internal class ReflectionUtils
     {
         public readonly static ReflectionUtils Instance = new ReflectionUtils();
 
-#if REFLECTION_EMIT
-        readonly SafeDictionary<Type, CtorDelegate> _constructorCache = new SafeDictionary<Type, CtorDelegate>();
-#endif
-
-        public object GetNewInstance(Type type)
-        {
-#if REFLECTION_EMIT
-            CtorDelegate c;
-            if (_constructorCache.TryGetValue(type, out c))
-                return c();
-            DynamicMethod dynMethod = new DynamicMethod("_", type, null);
-            ILGenerator ilGen = dynMethod.GetILGenerator();
-
-            ilGen.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
-            ilGen.Emit(OpCodes.Ret);
-            c = (CtorDelegate)dynMethod.CreateDelegate(typeof(CtorDelegate));
-            _constructorCache.Add(type, c);
-            return c();
-#else
-            return Activator.CreateInstance(type);
-#endif
-        }
-
-        internal static GetHandler CreateGetHandler(Type type, FieldInfo fieldInfo)
+        public static GetHandler CreateGetHandler(Type type, FieldInfo fieldInfo)
         {
             DynamicMethod dynamicGet = new DynamicMethod("DynamicGet", typeof(object), new[] { typeof(object) }, type, true);
             ILGenerator getGenerator = dynamicGet.GetILGenerator();
@@ -57,7 +30,7 @@ namespace ReflectionUtils
             return (GetHandler)dynamicGet.CreateDelegate(typeof(GetHandler));
         }
 
-        internal static SetHandler CreateSetHandler(Type type, FieldInfo fieldInfo)
+        public static SetHandler CreateSetHandler(Type type, FieldInfo fieldInfo)
         {
             if (fieldInfo.IsInitOnly || fieldInfo.IsLiteral)
                 return null;
@@ -75,7 +48,7 @@ namespace ReflectionUtils
             return (SetHandler)dynamicSet.CreateDelegate(typeof(SetHandler));
         }
 
-        internal static GetHandler CreateGetHandler(Type type, PropertyInfo propertyInfo)
+        public static GetHandler CreateGetHandler(Type type, PropertyInfo propertyInfo)
         {
             MethodInfo getMethodInfo = propertyInfo.GetGetMethod(true);
             if (getMethodInfo == null)
@@ -93,7 +66,7 @@ namespace ReflectionUtils
             return (GetHandler)dynamicGet.CreateDelegate(typeof(GetHandler));
         }
 
-        internal static SetHandler CreateSetHandler(Type type, PropertyInfo propertyInfo)
+        public static SetHandler CreateSetHandler(Type type, PropertyInfo propertyInfo)
         {
             MethodInfo setMethodInfo = propertyInfo.GetSetMethod(true);
             if (setMethodInfo == null)
@@ -112,4 +85,32 @@ namespace ReflectionUtils
         }
     }
 
+    public class ResolverCache
+    {
+#if REFLECTION_EMIT
+        delegate object CtorDelegate();
+#endif
+
+#if REFLECTION_EMIT
+        readonly SafeDictionary<Type, CtorDelegate> _constructorCache = new SafeDictionary<Type, CtorDelegate>();
+#endif
+        public object GetNewInstance(Type type)
+        {
+#if REFLECTION_EMIT
+            CtorDelegate c;
+            if (_constructorCache.TryGetValue(type, out c))
+                return c();
+            DynamicMethod dynMethod = new DynamicMethod("_", type, null);
+            ILGenerator ilGen = dynMethod.GetILGenerator();
+
+            ilGen.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
+            ilGen.Emit(OpCodes.Ret);
+            c = (CtorDelegate)dynMethod.CreateDelegate(typeof(CtorDelegate));
+            _constructorCache.Add(type, c);
+            return c();
+#else
+            return Activator.CreateInstance(type);
+#endif
+        }
+    }
 }

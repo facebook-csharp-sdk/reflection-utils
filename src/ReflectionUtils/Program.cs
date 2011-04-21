@@ -14,6 +14,7 @@ namespace ReflectionUtils
         private static SimpleClass simpleClass = SimpleClass.CreateInstance();
         private static FieldInfo fieldInfo = type.GetField("stringField", BINDING_FLAGS);
         private static PropertyInfo propertyInfo = type.GetProperty("stringProperty", BINDING_FLAGS);
+        private static ResolverCache resolverCache = new ResolverCache();
 
         static void Main(string[] args)
         {
@@ -58,7 +59,7 @@ namespace ReflectionUtils
 
             for (int i = 0; i < loops; i++)
             {
-                object result = ReflectionUtils.Instance.GetNewInstance(type);
+                object result = resolverCache.GetNewInstance(type);
             }
 
             EndTest("End CreateObjectUsingDynamicMethodCall");
