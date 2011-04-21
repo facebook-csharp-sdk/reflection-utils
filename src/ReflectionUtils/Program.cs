@@ -25,8 +25,11 @@ namespace ReflectionUtils
             CreateObjectUsingReflection(loops);
             CreateObjectUsingDynamicMethodCall(loops);
 
-            SetValueUsingReflection(loops);
-            SetValueUsingDynamicMethodCall(loops);
+            SetFieldValueUsingReflection(loops);
+            SetFieldValueUsingDynamicMethodCall(loops);
+
+            SetFieldValueUsingReflection(loops);
+            SetFieldValueUsingDynamicMethodCall(loops);
 
             GetFieldValueUsingReflection(loops);
             GetFieldValueUsingDynamicMethodCall(loops);
@@ -61,22 +64,22 @@ namespace ReflectionUtils
             EndTest("End CreateObjectUsingDynamicMethodCall");
         }
 
-        private static void SetValueUsingReflection(int loops)
+        private static void SetFieldValueUsingReflection(int loops)
         {
-            StartTest("Begin SetValueUsingReflection");
+            StartTest("Begin SetFieldValueUsingReflection");
 
             for (int i = 0; i < loops; i++)
             {
                 fieldInfo.SetValue(simpleClass, "test");
             }
 
-            EndTest("End SetValueUsingReflection");
+            EndTest("End SetFieldValueUsingReflection");
         }
 
         // SetValueUsingDynamicMethodCall
-        private static void SetValueUsingDynamicMethodCall(int loops)
+        private static void SetFieldValueUsingDynamicMethodCall(int loops)
         {
-            StartTest("Begin SetValueUsingDynamicMethodCall");
+            StartTest("Begin SetFieldValueUsingDynamicMethodCall");
 
             SetHandler setHandler = ReflectionUtils.CreateSetHandler(type, fieldInfo);
 
@@ -85,26 +88,53 @@ namespace ReflectionUtils
                 setHandler(simpleClass, "test");
             }
 
-            EndTest("End SetValueUsingDynamicMethodCall");
+            EndTest("End SetFieldValueUsingDynamicMethodCall");
+        }
+
+        private static void SetPropertyValueUsingReflection(int loops)
+        {
+            StartTest("Begin SetPropertyValueUsingReflection");
+
+            for (int i = 0; i < loops; i++)
+            {
+                propertyInfo.SetValue(simpleClass, "test", null);
+            }
+
+            EndTest("End SetPropertyValueUsingReflection");
+        }
+
+        // SetValueUsingDynamicMethodCall
+        private static void SetPropertyValueUsingDynamicMethodCall(int loops)
+        {
+            StartTest("Begin SetPropertyValueUsingDynamicMethodCall");
+
+            SetHandler setHandler = ReflectionUtils.CreateSetHandler(type, propertyInfo);
+
+            for (int i = 0; i < loops; i++)
+            {
+                setHandler(simpleClass, "test");
+            }
+
+            EndTest("End SetPropertyValueUsingDynamicMethodCall");
         }
 
         // GetValueUsingReflection
         private static void GetFieldValueUsingReflection(int loops)
         {
-            StartTest("Begin GetValueUsingReflection");
+            StartTest("Begin GetFieldValueUsingReflection");
 
             for (int i = 0; i < loops; i++)
             {
                 string value = (string)fieldInfo.GetValue(simpleClass);
             }
 
-            EndTest("End GetValueUsingReflection");
+            EndTest("End GetFieldValueUsingReflection");
         }
 
         // GetValueUsingDynamicMethodCall
         private static void GetFieldValueUsingDynamicMethodCall(int loops)
         {
-            StartTest("Begin GetValueUsingDynamicMethodCall");
+            StartTest("Begin GetFieldValueUsingDynamicMethodCall");
 
             GetHandler getHandler = ReflectionUtils.CreateGetHandler(type, fieldInfo);
 
@@ -113,7 +143,7 @@ namespace ReflectionUtils
                 string value = (string)getHandler(simpleClass);
             }
 
-            EndTest("End GetValueUsingDynamicMethodCall");
+            EndTest("End GetFieldValueUsingDynamicMethodCall");
         }
 
         // GetValueUsingReflection

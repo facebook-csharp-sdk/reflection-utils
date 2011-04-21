@@ -22,8 +22,8 @@ namespace ReflectionUtils
 
 #if REFLECTION_EMIT
         readonly SafeDictionary<Type, CtorDelegate> _constructorCache = new SafeDictionary<Type, CtorDelegate>();
-#endif        
-        
+#endif
+
         public object GetNewInstance(Type type)
         {
 #if REFLECTION_EMIT
@@ -45,7 +45,7 @@ namespace ReflectionUtils
 
         internal static GetHandler CreateGetHandler(Type type, FieldInfo fieldInfo)
         {
-            DynamicMethod dynamicGet = new DynamicMethod("DynamicGet", typeof(object), new [] { typeof(object) }, type, true);
+            DynamicMethod dynamicGet = new DynamicMethod("DynamicGet", typeof(object), new[] { typeof(object) }, type, true);
             ILGenerator getGenerator = dynamicGet.GetILGenerator();
 
             getGenerator.Emit(OpCodes.Ldarg_0);
@@ -59,7 +59,10 @@ namespace ReflectionUtils
 
         internal static SetHandler CreateSetHandler(Type type, FieldInfo fieldInfo)
         {
-            DynamicMethod dynamicSet = new DynamicMethod("DynamicSet", typeof(void), new [] { typeof(object), typeof(object) }, type, true);
+            if (fieldInfo.IsInitOnly || fieldInfo.IsLiteral)
+                return null;
+
+            DynamicMethod dynamicSet = new DynamicMethod("DynamicSet", typeof(void), new[] { typeof(object), typeof(object) }, type, true);
             ILGenerator setGenerator = dynamicSet.GetILGenerator();
 
             setGenerator.Emit(OpCodes.Ldarg_0);
@@ -77,7 +80,7 @@ namespace ReflectionUtils
             MethodInfo getMethodInfo = propertyInfo.GetGetMethod(true);
             if (getMethodInfo == null)
                 return null;
-            
+
             DynamicMethod dynamicGet = new DynamicMethod("DynamicGet", typeof(object), new[] { typeof(object) }, type, true);
             ILGenerator getGenerator = dynamicGet.GetILGenerator();
 
@@ -89,5 +92,24 @@ namespace ReflectionUtils
 
             return (GetHandler)dynamicGet.CreateDelegate(typeof(GetHandler));
         }
+
+        internal static SetHandler CreateSetHandler(Type type, PropertyInfo propertyInfo)
+        {
+            MethodInfo setMethodInfo = propertyInfo.GetSetMethod(true);
+            if (setMethodInfo == null)
+                return null;
+
+            DynamicMethod dynamicSet = new DynamicMethod("DynamicSet", typeof(void), new[] { typeof(object), typeof(object) }, type, true);
+            ILGenerator setGenerator = dynamicSet.GetILGenerator();
+
+            setGenerator.Emit(OpCodes.Ldarg_0);
+            setGenerator.Emit(OpCodes.Ldarg_1);
+            if (type.IsValueType)
+                setGenerator.Emit(OpCodes.Unbox_Any, type);
+            setGenerator.Emit(OpCodes.Call, setMethodInfo);
+            setGenerator.Emit(OpCodes.Ret);
+            return (SetHandler)dynamicSet.CreateDelegate(typeof(SetHandler));
+        }
     }
+
 }
