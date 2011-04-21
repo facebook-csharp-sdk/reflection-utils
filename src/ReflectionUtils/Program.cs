@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace ReflectionUtils
 {
@@ -14,7 +11,7 @@ namespace ReflectionUtils
         private static SimpleClass simpleClass = SimpleClass.CreateInstance();
         private static FieldInfo fieldInfo = type.GetField("stringField", BINDING_FLAGS);
         private static PropertyInfo propertyInfo = type.GetProperty("stringProperty", BINDING_FLAGS);
-        private static ResolverCache resolverCache = new ResolverCache();
+        private static ResolverCache resolverCache = new ResolverCache(ResolverCache.PocoMapLoader);
 
         static void Main(string[] args)
         {
@@ -59,7 +56,7 @@ namespace ReflectionUtils
 
             for (int i = 0; i < loops; i++)
             {
-                object result = resolverCache.GetNewInstance(type);
+                object result = ResolverCache.GetNewInstance(type);
             }
 
             EndTest("End CreateObjectUsingDynamicMethodCall");
@@ -81,8 +78,7 @@ namespace ReflectionUtils
         private static void SetFieldValueUsingDynamicMethodCall(int loops)
         {
             StartTest("Begin SetFieldValueUsingDynamicMethodCall");
-
-            SetHandler setHandler = ReflectionUtils.CreateSetHandler(type, fieldInfo);
+            SetHandler setHandler = resolverCache.LoadMaps(type)[fieldInfo.Name].Setter;
 
             for (int i = 0; i < loops; i++)
             {
@@ -108,11 +104,11 @@ namespace ReflectionUtils
         private static void SetPropertyValueUsingDynamicMethodCall(int loops)
         {
             StartTest("Begin SetPropertyValueUsingDynamicMethodCall");
-
-            SetHandler setHandler = ReflectionUtils.CreateSetHandler(type, propertyInfo);
+            SetHandler setHandler = resolverCache.LoadMaps(type)[propertyInfo.Name].Setter;
 
             for (int i = 0; i < loops; i++)
             {
+
                 setHandler(simpleClass, "test");
             }
 
@@ -136,8 +132,8 @@ namespace ReflectionUtils
         private static void GetFieldValueUsingDynamicMethodCall(int loops)
         {
             StartTest("Begin GetFieldValueUsingDynamicMethodCall");
+            GetHandler getHandler = resolverCache.LoadMaps(type)[fieldInfo.Name].Getter;
 
-            GetHandler getHandler = ReflectionUtils.CreateGetHandler(type, fieldInfo);
 
             for (int i = 0; i < loops; i++)
             {
@@ -164,8 +160,7 @@ namespace ReflectionUtils
         private static void GetPropertyValueUsingDynamicMethodCall(int loops)
         {
             StartTest("Begin GetPropertyValueUsingDynamicMethodCall");
-
-            GetHandler getHandler = ReflectionUtils.CreateGetHandler(type, propertyInfo);
+            GetHandler getHandler = resolverCache.LoadMaps(type)[propertyInfo.Name].Getter;
 
             for (int i = 0; i < loops; i++)
             {
