@@ -7,7 +7,7 @@
     d:DesignHeight="768" d:DesignWidth="1366">
     
     <Grid x:Name="LayoutRoot" Background="#FF0C0C0C">
-
+        <TextBox AcceptsReturn="True" x:Name="result"></TextBox>
     </Grid>
     
 </UserControl>

@@ -17,18 +17,29 @@ namespace ReflectionUtils
     {
         public static Attribute GetAttribute(MemberInfo info, Type type)
         {
+#if REFLECTION_UTILS_WINRT
+            if (info == null || type == null || !info.IsDefined(type))
+                return null;
+            return info.GetCustomAttribute(type);
+#else
             if (info == null || type == null || !Attribute.IsDefined(info, type))
                 return null;
-
             return Attribute.GetCustomAttribute(info, type);
+#endif
         }
 
         public static Attribute GetAttribute(Type objectType, Type attributeType)
         {
+
+#if REFLECTION_UTILS_WINRT
+            if (objectType == null || attributeType == null || !objectType.GetTypeInfo().IsDefined(attributeType))
+                return null;
+            return objectType.GetTypeInfo().GetCustomAttribute(attributeType);
+#else
             if (objectType == null || attributeType == null || !Attribute.IsDefined(objectType, attributeType))
                 return null;
-
             return Attribute.GetCustomAttribute(objectType, attributeType);
+#endif
         }
 
         public static bool IsTypeGenericeCollectionInterface(Type type)
@@ -43,8 +54,13 @@ namespace ReflectionUtils
 
         public static bool IsTypeDictionary(Type type)
         {
+#if REFLECTION_UTILS_WINRT
+            if (typeof(IDictionary<,>).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                return true;
+#else
             if (typeof(IDictionary).IsAssignableFrom(type))
                 return true;
+#endif
 
             if (!type.IsGenericType)
                 return false;
@@ -120,7 +136,20 @@ namespace ReflectionUtils
                 ConstructorCache.Add(type, c);
                 return c();
 #else
+#if REFLECTION_UTILS_WINRT
+            IEnumerable<ConstructorInfo> constructorInfos = type.GetTypeInfo().DeclaredConstructors;
+            ConstructorInfo constructorInfo = null;
+            foreach (ConstructorInfo item in constructorInfos) // FirstOrDefault()
+            {
+                if (item.GetParameters().Length == 0) // Default ctor - make sure it doesn't contain any parameters
+                {
+                    constructorInfo = item;
+                    break;
+                }
+            }
+#else
             ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+#endif
             c = delegate { return constructorInfo.Invoke(null); };
             ConstructorCache.Add(type, c);
             return c();
@@ -194,7 +223,11 @@ namespace ReflectionUtils
 
         static GetHandler CreateGetHandler(PropertyInfo propertyInfo)
         {
+#if REFLECTION_UTILS_WINRT
+            MethodInfo getMethodInfo = propertyInfo.GetMethod;
+#else
             MethodInfo getMethodInfo = propertyInfo.GetGetMethod(true);
+#endif
             if (getMethodInfo == null)
                 return null;
 #if REFLECTION_UTILS_REFLECTIONEMIT
@@ -210,13 +243,21 @@ namespace ReflectionUtils
 
                 return (GetHandler)dynamicGet.CreateDelegate(typeof(GetHandler));
 #else
+#if REFLECTION_UTILS_WINRT
+            return delegate(object instance) { return getMethodInfo.Invoke(instance, new Type[] { }); };
+#else
             return delegate(object instance) { return getMethodInfo.Invoke(instance, Type.EmptyTypes); };
+#endif
 #endif
         }
 
         static SetHandler CreateSetHandler(PropertyInfo propertyInfo)
         {
+#if REFLECTION_UTILS_WINRT
+            MethodInfo setMethodInfo = propertyInfo.SetMethod;
+#else
             MethodInfo setMethodInfo = propertyInfo.GetSetMethod(true);
+#endif
             if (setMethodInfo == null)
                 return null;
 #if REFLECTION_UTILS_REFLECTIONEMIT

@@ -18,6 +18,16 @@ namespace ReflectionUtils
             //int loops = int.Parse(Console.ReadLine());
 
             int loops = 10000;
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(int)));
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(long)));
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(double)));
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(byte)));
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(float)));
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(short)));
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(decimal)));
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(bool)));
+            Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(Program)));
+            return;
 
             CreateObjectUsingReflection(loops);
             CreateObjectUsingDynamicMethodCall(loops);
