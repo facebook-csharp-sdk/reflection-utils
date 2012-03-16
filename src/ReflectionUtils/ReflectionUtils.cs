@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 #if REFLECTION_UTILS_REFLECTIONEMIT
 using System.Reflection.Emit;
@@ -27,6 +28,7 @@ using System.Reflection.Emit;
 
 namespace ReflectionUtils
 {
+
 #if REFLECTION_UTILS_INTERNAL
     internal
 #else
@@ -92,6 +94,16 @@ namespace ReflectionUtils
 #endif
             Type genericDefinition = type.GetGenericTypeDefinition();
             return genericDefinition == typeof(IDictionary<,>);
+        }
+
+        public static bool IsNullableType(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        public static object ToNullableType(object obj, Type nullableType)
+        {
+            return obj == null ? null : Convert.ChangeType(obj, Nullable.GetUnderlyingType(nullableType), CultureInfo.InvariantCulture);
         }
     }
 }
