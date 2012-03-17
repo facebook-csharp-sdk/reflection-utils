@@ -98,7 +98,13 @@ namespace ReflectionUtils
 
         public static bool IsNullableType(Type type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+            return
+#if NETFX_CORE
+                type.GetTypeInfo().IsGenericType
+#else
+                type.IsGenericType
+#endif
+                && type.GetGenericTypeDefinition() == typeof (Nullable<>);
         }
 
         public static object ToNullableType(object obj, Type nullableType)
