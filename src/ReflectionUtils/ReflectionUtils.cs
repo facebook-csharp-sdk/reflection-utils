@@ -142,6 +142,8 @@ public
 #endif
  class CacheResolver
 {
+    private static readonly Type[] EmptyTypes = new Type[0];
+
     private readonly MemberMapLoader _memberMapLoader;
     private readonly SafeDictionary<Type, SafeDictionary<string, MemberMap>> _memberMapsCache = new SafeDictionary<Type, SafeDictionary<string, MemberMap>>();
 
@@ -192,7 +194,7 @@ public
             }
         }
 #else
-            ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+            ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, EmptyTypes, null);
 #endif
         c = delegate { return constructorInfo.Invoke(null); };
         ConstructorCache.Add(type, c);
@@ -290,7 +292,7 @@ public
 #if NETFX_CORE
         return delegate(object instance) { return getMethodInfo.Invoke(instance, new Type[] { }); };
 #else
-            return delegate(object instance) { return getMethodInfo.Invoke(instance, Type.EmptyTypes); };
+            return delegate(object instance) { return getMethodInfo.Invoke(instance, EmptyTypes); };
 #endif
 #endif
     }
