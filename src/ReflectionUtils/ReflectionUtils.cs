@@ -39,7 +39,6 @@ using System.Reflection.Emit;
 
 namespace ReflectionUtils
 {
-
 #if REFLECTION_UTILS_INTERNAL
     internal
 #else
@@ -47,6 +46,8 @@ namespace ReflectionUtils
 #endif
  class ReflectionUtils
     {
+        private static readonly object[] EmptyObjects = new object[] { };
+
         public static Attribute GetAttribute(MemberInfo info, Type type)
         {
 #if NETFX_CORE
@@ -206,15 +207,15 @@ namespace ReflectionUtils
 #endif
         }
 
-        public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
+        public static ConstructorDelegate GetContructor(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
         }
 
-        public static ConstructorDelegate GetConstructorByReflection(Type type, params  Type[] argsType)
+        public static ConstructorDelegate GetConstructor(Type type, params  Type[] argsType)
         {
             ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
-            return constructorInfo == null ? null : GetContructorByReflection(constructorInfo);
+            return constructorInfo == null ? null : GetContructor(constructorInfo);
         }
 
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
@@ -247,11 +248,19 @@ namespace ReflectionUtils
 #endif
 
 #if REFLECTION_UTILS_REFLECTION_EMIT
-
-        
-
+        // todo: GetConstructorByReflectionEmit
 #endif
 
+        public static GetHandler GetGetMethod(PropertyInfo propertyInfo)
+        {
+            MethodInfo methodInfo = GetGetterMethodInfo(propertyInfo);
+            return delegate(object source) { return methodInfo.Invoke(source, EmptyObjects); };
+        }
+
+        public static GetHandler GetGetMethod(FieldInfo fieldInfo)
+        {
+            return delegate(object source) { return fieldInfo.GetValue(source); };
+        }
     }
 }
 
