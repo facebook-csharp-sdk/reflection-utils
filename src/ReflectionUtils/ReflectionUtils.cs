@@ -193,6 +193,12 @@ namespace ReflectionUtils
             return delegate(object[] args) { return compiledLambda(args); };
         }
 
+        public static ConstructorDelegate GetConstructorByExpression(Type type, params Type[] argsType)
+        {
+            ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
+            return constructorInfo == null ? null : GetConstructorByExpression(constructorInfo);
+        }
+
 #endif
 
     }
