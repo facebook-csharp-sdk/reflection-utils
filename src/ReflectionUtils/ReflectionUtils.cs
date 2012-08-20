@@ -179,6 +179,15 @@ namespace ReflectionUtils
 #endif
         }
 
+        public static IEnumerable<FieldInfo> GetFields(Type type)
+        {
+#if REFLECTION_UTILS_TYPEINFO
+            return type.GetTypeInfo().DeclaredFields;
+#else
+            return type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+#endif
+        }
+
         public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
