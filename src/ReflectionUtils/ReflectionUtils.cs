@@ -133,6 +133,13 @@ public
 #else
 public
 #endif
+ delegate object ConstructorDelegate(params object[] args);
+
+#if REFLECTION_UTILS_INTERNAL
+    internal
+#else
+public
+#endif
  delegate void MemberMapLoader(Type type, SafeDictionary<string, CacheResolver.MemberMap> memberMaps);
 
 #if REFLECTION_UTILS_INTERNAL
