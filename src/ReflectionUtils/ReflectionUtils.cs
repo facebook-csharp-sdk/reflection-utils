@@ -204,15 +204,15 @@ namespace ReflectionUtils
 #endif
         }
 
-        public static ConstructorDelegate GetContructor(ConstructorInfo constructorInfo)
+        public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
         }
 
-        public static ConstructorDelegate GetConstructor(Type type, params Type[] argsType)
+        public static ConstructorDelegate GetConstructorByReflection(Type type, params Type[] argsType)
         {
             ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
-            return constructorInfo == null ? null : GetContructor(constructorInfo);
+            return constructorInfo == null ? null : GetContructorByReflection(constructorInfo);
         }
 
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
@@ -244,13 +244,13 @@ namespace ReflectionUtils
 
 #endif
 
-        public static GetDelegate GetGetMethod(PropertyInfo propertyInfo)
+        public static GetDelegate GetGetMethodByReflection(PropertyInfo propertyInfo)
         {
             MethodInfo methodInfo = GetGetterMethodInfo(propertyInfo);
             return delegate(object source) { return methodInfo.Invoke(source, EmptyObjects); };
         }
 
-        public static GetDelegate GetGetMethod(FieldInfo fieldInfo)
+        public static GetDelegate GetGetMethodByReflection(FieldInfo fieldInfo)
         {
             return delegate(object source) { return fieldInfo.GetValue(source); };
         }
@@ -276,13 +276,13 @@ namespace ReflectionUtils
 
 #endif
 
-        public static SetDelegate GetSetMethod(PropertyInfo propertyInfo)
+        public static SetDelegate GetSetMethodByReflection(PropertyInfo propertyInfo)
         {
             MethodInfo methodInfo = GetSetterMethodInfo(propertyInfo);
             return delegate(object source, object value) { methodInfo.Invoke(source, new object[] { value }); };
         }
 
-        public static SetDelegate GetSetMethod(FieldInfo fieldInfo)
+        public static SetDelegate GetSetMethodByReflection(FieldInfo fieldInfo)
         {
             return delegate(object source, object value) { fieldInfo.SetValue(source, value); };
         }
