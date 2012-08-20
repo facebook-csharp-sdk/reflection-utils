@@ -31,10 +31,10 @@ using System.Reflection;
 
 namespace ReflectionUtils
 {
-#if REFLECTION_UTILS_INTERNAL
-    internal
-#else
+#if REFLECTION_UTILS_PUBLIC
     public
+#else
+    internal
 #endif
  class ReflectionUtils
     {
