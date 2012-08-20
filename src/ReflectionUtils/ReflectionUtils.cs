@@ -128,6 +128,35 @@ namespace ReflectionUtils
             return type.GetConstructors();
 #endif
         }
+
+        public static ConstructorInfo GetConstructorInfo(Type type, params Type[] argsType)
+        {
+            IEnumerable<ConstructorInfo> constructorInfos = GetConstructors(type);
+            int i;
+            bool matches;
+            foreach (ConstructorInfo constructorInfo in constructorInfos)
+            {
+                ParameterInfo[] parameters = constructorInfo.GetParameters();
+                if (argsType.Length != parameters.Length)
+                    continue;
+
+                i = 0;
+                matches = true;
+                foreach (ParameterInfo parameterInfo in constructorInfo.GetParameters())
+                {
+                    if (parameterInfo.ParameterType != argsType[i])
+                    {
+                        matches = false;
+                        break;
+                    }
+                }
+
+                if (matches)
+                    return constructorInfo;
+            }
+
+            return null;
+        }
     }
 }
 
