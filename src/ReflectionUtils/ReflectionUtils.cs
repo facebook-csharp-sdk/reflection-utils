@@ -197,6 +197,15 @@ namespace ReflectionUtils
 #endif
         }
 
+        public static MethodInfo GetSetterMethodInfo(PropertyInfo propertyInfo)
+        {
+#if NETFX_CORE
+            return propertyInfo.SetMethod;
+#else
+            return propertyInfo.GetSetMethod(true);
+#endif
+        }
+
         public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
