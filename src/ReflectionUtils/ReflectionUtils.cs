@@ -282,6 +282,18 @@ namespace ReflectionUtils
         }
 
 #endif
+
+        public static SetHandler GetSetMethod(PropertyInfo propertyInfo)
+        {
+            MethodInfo methodInfo = GetSetterMethodInfo(propertyInfo);
+            return delegate(object source, object value) { methodInfo.Invoke(source, new object[] { value }); };
+        }
+
+        public static SetHandler GetSetMethod(FieldInfo fieldInfo)
+        {
+            return delegate(object source, object value) { fieldInfo.SetValue(source, value); };
+        }
+
     }
 }
 
