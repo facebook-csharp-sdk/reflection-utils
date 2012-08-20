@@ -188,6 +188,15 @@ namespace ReflectionUtils
 #endif
         }
 
+        public static MethodInfo GetGetterMethodInfo(PropertyInfo propertyInfo)
+        {
+#if REFLECTION_UTILS_TYPEINFO
+            return propertyInfo.GetMethod;
+#else
+            return propertyInfo.GetGetMethod(true);
+#endif
+        }
+
         public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
