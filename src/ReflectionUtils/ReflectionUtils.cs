@@ -123,6 +123,15 @@ namespace ReflectionUtils
             return obj == null ? null : Convert.ChangeType(obj, Nullable.GetUnderlyingType(nullableType), CultureInfo.InvariantCulture);
         }
 
+        public static bool IsValueType(Type type)
+        {
+#if NETFX_CORE
+            return type.GetTypeInfo().IsValueType;
+#else
+            return type.IsValueType;
+#endif
+        }
+
         public static IEnumerable<ConstructorInfo> GetConstructors(Type type)
         {
 #if REFLECTION_UTILS_TYPEINFO
