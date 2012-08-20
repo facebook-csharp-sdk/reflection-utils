@@ -204,6 +204,24 @@ namespace ReflectionUtils
 #endif
         }
 
+        public static ConstructorDelegate GetContructor(ConstructorInfo constructorInfo)
+        {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
+            return GetContructorByReflection(constructorInfo);
+#else
+            return GetConstructorByExpression(constructorInfo);
+#endif
+        }
+
+        public static ConstructorDelegate GetContructor(Type type, params Type[] argsType)
+        {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
+            return GetContructorByReflection(type, argsType);
+#else
+            return GetConstructorByExpression(type, argsType);
+#endif
+        }
+
         public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
@@ -244,6 +262,24 @@ namespace ReflectionUtils
 
 #endif
 
+        public static GetDelegate GetGetMethod(PropertyInfo propertyInfo)
+        {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
+            return GetGetMethodByReflection(propertyInfo);
+#else
+            return GetGetMethodByExpression(propertyInfo);
+#endif
+        }
+
+        public static GetDelegate GetGetMethod(FieldInfo fieldInfo)
+        {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
+            return GetGetMethodByReflection(fieldInfo);
+#else
+            return GetGetMethodByExpression(fieldInfo);
+#endif
+        }
+
         public static GetDelegate GetGetMethodByReflection(PropertyInfo propertyInfo)
         {
             MethodInfo methodInfo = GetGetterMethodInfo(propertyInfo);
@@ -275,6 +311,24 @@ namespace ReflectionUtils
         }
 
 #endif
+
+        public static SetDelegate GetSetMethod(PropertyInfo propertyInfo)
+        {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
+            return GetSetMethodByReflection(propertyInfo);
+#else
+            return GetSetMethodByExpression(propertyInfo);
+#endif
+        }
+
+        public static SetDelegate GetSetMethod(FieldInfo fieldInfo)
+        {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
+            return GetSetMethodByReflection(fieldInfo);
+#else
+            return GetSetMethodByExpression(fieldInfo);
+#endif
+        }
 
         public static SetDelegate GetSetMethodByReflection(PropertyInfo propertyInfo)
         {
