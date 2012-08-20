@@ -44,6 +44,8 @@ namespace ReflectionUtils
         public delegate object GetDelegate(object source);
         public delegate void SetDelegate(object source, object value);
         public delegate object ConstructorDelegate(params object[] args);
+        
+        public delegate TValue ThreadSafeDictionaryValueFactory<TKey, TValue>(TKey key);
 
         public static Attribute GetAttribute(MemberInfo info, Type type)
         {
@@ -382,6 +384,51 @@ namespace ReflectionUtils
             }
         }
 #endif
+
+        public sealed class ThreadSafeDictionary<TKey, TValue>
+        {
+            private readonly object _lock = new object();
+            private readonly ThreadSafeDictionaryValueFactory<TKey, TValue> _valueFactory;
+            private Dictionary<TKey, TValue> _dictionary;
+
+            public ThreadSafeDictionary(ThreadSafeDictionaryValueFactory<TKey, TValue> valueFactory)
+            {
+                _valueFactory = valueFactory;
+            }
+
+            public TValue Get(TKey key)
+            {
+                if (_dictionary == null)
+                    return AddValue(key);
+                TValue value;
+                if (!_dictionary.TryGetValue(key, out value))
+                    return AddValue(key);
+                return value;
+            }
+
+            private TValue AddValue(TKey key)
+            {
+                TValue value = _valueFactory(key);
+                lock (_lock)
+                {
+                    if (_dictionary == null)
+                    {
+                        _dictionary = new Dictionary<TKey, TValue>();
+                        _dictionary[key] = value;
+                    }
+                    else
+                    {
+                        TValue val;
+                        if (_dictionary.TryGetValue(key, out val))
+                            return val;
+                        Dictionary<TKey, TValue> dict = new Dictionary<TKey, TValue>(_dictionary);
+                        dict[key] = value;
+                        _dictionary = dict;
+                    }
+                }
+                return value;
+            }
+        }
 
     }
 }
