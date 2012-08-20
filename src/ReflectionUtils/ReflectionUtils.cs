@@ -261,6 +261,27 @@ namespace ReflectionUtils
         {
             return delegate(object source) { return fieldInfo.GetValue(source); };
         }
+
+#if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
+
+        public static GetHandler GetGetMethodByExpression(PropertyInfo propertyInfo)
+        {
+            MethodInfo getMethodInfo = GetGetterMethodInfo(propertyInfo);
+            ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
+            UnaryExpression instanceCast = (!IsValueType(propertyInfo.DeclaringType)) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
+            Func<object, object> compiled = Expression.Lambda<Func<object, object>>(Expression.TypeAs(Expression.Call(instanceCast, getMethodInfo), typeof(object)), instance).Compile();
+            return delegate(object source) { return compiled(source); };
+        }
+
+        public static GetHandler GetGetMethodByExpression(FieldInfo fieldInfo)
+        {
+            ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
+            MemberExpression member = Expression.Field(Expression.Convert(instance, fieldInfo.DeclaringType), fieldInfo);
+            GetHandler compiled = Expression.Lambda<GetHandler>(Expression.Convert(member, typeof(object)), instance).Compile();
+            return delegate(object source) { return compiled(source); };
+        }
+
+#endif
     }
 }
 
