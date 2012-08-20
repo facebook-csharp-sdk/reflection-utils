@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionUtils-WinRT", "Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionUtils-Portable", "ReflectionUtils\ReflectionUtils-Portable.csproj", "{94F83285-648D-44D4-BEFC-7D0A4EC54460}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionUtils-Portable-NoLinqExpression", "ReflectionUtils\ReflectionUtils-Portable-NoLinqExpression.csproj", "{5385699B-640F-42AE-9599-1109C894E294}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,16 @@ Global
 		{94F83285-648D-44D4-BEFC-7D0A4EC54460}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{94F83285-648D-44D4-BEFC-7D0A4EC54460}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{94F83285-648D-44D4-BEFC-7D0A4EC54460}.Release|x86.ActiveCfg = Release|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5385699B-640F-42AE-9599-1109C894E294}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

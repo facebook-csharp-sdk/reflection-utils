@@ -207,7 +207,7 @@ namespace ReflectionUtils
         public static ConstructorDelegate GetContructor(ConstructorInfo constructorInfo)
         {
 #if REFLECTION_UTILS_NO_LINQ_EXPRESSION
-            return GetContructorByReflection(constructorInfo);
+            return GetConstructorByReflection(constructorInfo);
 #else
             return GetConstructorByExpression(constructorInfo);
 #endif
@@ -216,13 +216,13 @@ namespace ReflectionUtils
         public static ConstructorDelegate GetContructor(Type type, params Type[] argsType)
         {
 #if REFLECTION_UTILS_NO_LINQ_EXPRESSION
-            return GetContructorByReflection(type, argsType);
+            return GetConstructorByReflection(type, argsType);
 #else
             return GetConstructorByExpression(type, argsType);
 #endif
         }
 
-        public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
+        public static ConstructorDelegate GetConstructorByReflection(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
         }
@@ -230,7 +230,7 @@ namespace ReflectionUtils
         public static ConstructorDelegate GetConstructorByReflection(Type type, params Type[] argsType)
         {
             ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
-            return constructorInfo == null ? null : GetContructorByReflection(constructorInfo);
+            return constructorInfo == null ? null : GetConstructorByReflection(constructorInfo);
         }
 
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
