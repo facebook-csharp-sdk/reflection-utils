@@ -28,6 +28,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
+using System.Linq.Expressions;
+#endif
 using System.Globalization;
 using System.Reflection;
 #if REFLECTION_UTILS_REFLECTIONEMIT
@@ -168,6 +171,30 @@ namespace ReflectionUtils
             ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
             return constructorInfo == null ? null : GetContructorByReflection(constructorInfo);
         }
+
+#if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
+
+        public static ConstructorDelegate GetConstructorByExpression(ConstructorInfo constructorInfo)
+        {
+            ParameterInfo[] paramsInfo = constructorInfo.GetParameters();
+            ParameterExpression param = Expression.Parameter(typeof(object[]), "args");
+            Expression[] argsExp = new Expression[paramsInfo.Length];
+            for (int i = 0; i < paramsInfo.Length; i++)
+            {
+                Expression index = Expression.Constant(i);
+                Type paramType = paramsInfo[i].ParameterType;
+                Expression paramAccessorExp = Expression.ArrayIndex(param, index);
+                Expression paramCastExp = Expression.Convert(paramAccessorExp, paramType);
+                argsExp[i] = paramCastExp;
+            }
+            NewExpression newExp = Expression.New(constructorInfo, argsExp);
+            Expression<Func<object[], object>> lambda = Expression.Lambda<Func<object[], object>>(newExp, param);
+            Func<object[], object> compiledLambda = lambda.Compile();
+            return delegate(object[] args) { return compiledLambda(args); };
+        }
+
+#endif
+
     }
 }
 
