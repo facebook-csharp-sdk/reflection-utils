@@ -162,6 +162,12 @@ namespace ReflectionUtils
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
         }
+
+        public static ConstructorDelegate GetConstructorByReflection(Type type, params  Type[] argsType)
+        {
+            ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
+            return constructorInfo == null ? null : GetContructorByReflection(constructorInfo);
+        }
     }
 }
 
