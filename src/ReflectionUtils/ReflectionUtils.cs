@@ -170,6 +170,15 @@ namespace ReflectionUtils
             return null;
         }
 
+        public static IEnumerable<PropertyInfo> GetProperties(Type type)
+        {
+#if REFLECTION_UTILS_TYPEINFO
+            return type.GetTypeInfo().DeclaredProperties;
+#else
+            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+#endif
+        }
+
         public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
@@ -207,6 +216,12 @@ namespace ReflectionUtils
             ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
             return constructorInfo == null ? null : GetConstructorByExpression(constructorInfo);
         }
+
+#endif
+
+#if REFLECTION_UTILS_REFLECTION_EMIT
+
+        
 
 #endif
 
