@@ -247,10 +247,6 @@ namespace ReflectionUtils
 
 #endif
 
-#if REFLECTION_UTILS_REFLECTION_EMIT
-        // todo: GetConstructorByReflectionEmit
-#endif
-
         public static GetHandler GetGetMethod(PropertyInfo propertyInfo)
         {
             MethodInfo methodInfo = GetGetterMethodInfo(propertyInfo);
@@ -294,6 +290,46 @@ namespace ReflectionUtils
             return delegate(object source, object value) { fieldInfo.SetValue(source, value); };
         }
 
+#if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
+        public static SetHandler GetSetMethodByExpression(PropertyInfo propertyInfo)
+        {
+            MethodInfo setMethodInfo = GetSetterMethodInfo(propertyInfo);
+            ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
+            ParameterExpression value = Expression.Parameter(typeof(object), "value");
+            UnaryExpression instanceCast = (!IsValueType(propertyInfo.DeclaringType)) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
+            UnaryExpression valueCast = (!IsValueType(propertyInfo.PropertyType)) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
+            Action<object, object> compiled = Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, setMethodInfo, valueCast), new ParameterExpression[] { instance, value }).Compile();
+            return delegate(object source, object val) { compiled(source, val); };
+        }
+
+        public static SetHandler GetSetMethodByExpression(FieldInfo fieldInfo)
+        {
+            ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
+            ParameterExpression value = Expression.Parameter(typeof(object), "value");
+            Action<object, object> compiled = Expression.Lambda<Action<object, object>>(
+                Assign(Expression.Field(Expression.Convert(instance, fieldInfo.DeclaringType), fieldInfo), Expression.Convert(value, fieldInfo.FieldType)), instance, value).Compile();
+            return delegate(object source, object val) { compiled(source, val); };
+        }
+
+        public static BinaryExpression Assign(Expression left, Expression right)
+        {
+#if NETFX_CORE
+            return Expression.Assign(left, right);
+#else
+            MethodInfo assign = typeof(Assigner<>).MakeGenericType(left.Type).GetMethod("Assign");
+            BinaryExpression assignExpr = Expression.Add(left, right, assign);
+            return assignExpr;
+#endif
+        }
+
+        private static class Assigner<T>
+        {
+            public static T Assign(ref T left, T right)
+            {
+                return (left = right);
+            }
+        }
+#endif
     }
 }
 
