@@ -22,7 +22,6 @@
 #endif
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
 using System.Linq.Expressions;
@@ -97,7 +96,7 @@ namespace ReflectionUtils
             if (!type.GetTypeInfo().IsGenericType)
                 return false;
 #else
-            if (typeof(IDictionary).IsAssignableFrom(type))
+            if (typeof(System.Collections.IDictionary).IsAssignableFrom(type))
                 return true;
 
             if (!type.IsGenericType)
