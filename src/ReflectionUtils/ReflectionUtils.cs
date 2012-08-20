@@ -17,6 +17,14 @@
 // <website>https://github.com/facebook-csharp-sdk/ReflectionUtils</website>
 //-----------------------------------------------------------------------
 
+#if SILVERLIGHT || WINDOWS_PHONE || NETFX_CORE
+#undef REFLECTION_UTILS_REFLECTION_EMIT
+#endif
+
+#if NETFX_CORE
+#define REFLECTION_UTILS_TYPEINFO
+#endif
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -111,6 +119,15 @@ namespace ReflectionUtils
         {
             return obj == null ? null : Convert.ChangeType(obj, Nullable.GetUnderlyingType(nullableType), CultureInfo.InvariantCulture);
         }
+
+        public static IEnumerable<ConstructorInfo> GetConstructors(Type type)
+        {
+#if REFLECTION_UTILS_TYPEINFO
+            return type.GetTypeInfo().DeclaredConstructors;
+#else
+            return type.GetConstructors();
+#endif
+        }
     }
 }
 
@@ -201,7 +218,7 @@ public
             }
         }
 #else
-            ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, EmptyTypes, null);
+        ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, EmptyTypes, null);
 #endif
         c = delegate { return constructorInfo.Invoke(null); };
         ConstructorCache.Add(type, c);
