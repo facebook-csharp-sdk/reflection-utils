@@ -44,7 +44,7 @@ namespace ReflectionUtils_WinRT
             InitializeComponent();
 
             int loops = 10000;
-
+            /*
             CreateObjectUsingReflection(loops);
             CreateObjectUsingDynamicMethodCall(loops);
 
@@ -58,9 +58,10 @@ namespace ReflectionUtils_WinRT
             GetFieldValueUsingDynamicMethodCall(loops);
 
             GetPropertyValueUsingReflection(loops);
-            GetPropertyValueUsingDynamicMethodCall(loops);
+            GetPropertyValueUsingDynamicMethodCall(loops);*/
         }
 
+        /*
         private void CreateObjectUsingReflection(int loops)
         {
             StartTest("Begin CreateObjectUsingReflection");
@@ -212,5 +213,7 @@ namespace ReflectionUtils_WinRT
             //Console.WriteLine(DateTime.Now - lastTestStartTime);
             //Console.WriteLine("");
         }
+          
+        */
     }
 }

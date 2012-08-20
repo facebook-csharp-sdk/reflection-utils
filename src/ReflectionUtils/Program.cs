@@ -48,6 +48,7 @@ namespace ReflectionUtils
             Console.WriteLine(typeof(IConvertible).IsAssignableFrom(typeof(Program)));
             return;
 
+            /*
             CreateObjectUsingReflection(loops);
             CreateObjectUsingDynamicMethodCall(loops);
 
@@ -61,9 +62,10 @@ namespace ReflectionUtils
             GetFieldValueUsingDynamicMethodCall(loops);
 
             GetPropertyValueUsingReflection(loops);
-            GetPropertyValueUsingDynamicMethodCall(loops);
+            GetPropertyValueUsingDynamicMethodCall(loops);*/
         }
 
+        /*
         private static void CreateObjectUsingReflection(int loops)
         {
             StartTest("Begin CreateObjectUsingReflection");
@@ -211,5 +213,7 @@ namespace ReflectionUtils
             Console.WriteLine(DateTime.Now - lastTestStartTime);
             Console.WriteLine("");
         }
+        
+        */
     }
 }
