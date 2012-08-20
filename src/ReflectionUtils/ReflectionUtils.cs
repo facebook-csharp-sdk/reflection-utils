@@ -157,6 +157,11 @@ namespace ReflectionUtils
 
             return null;
         }
+
+        public static ConstructorDelegate GetContructorByReflection(ConstructorInfo constructorInfo)
+        {
+            return delegate(object[] args) { return constructorInfo.Invoke(args); };
+        }
     }
 }
 
@@ -372,7 +377,7 @@ public
                 setGenerator.Emit(OpCodes.Ret);
                 return (SetHandler)dynamicSet.CreateDelegate(typeof(SetHandler));
 #else
-        return delegate(object instance, object value) { setMethodInfo.Invoke(instance, new[] { value }); };
+        return delegate(object instance, object value) { setMethodInfo.Invoke(instance, new object[] { value }); };
 #endif
     }
 
