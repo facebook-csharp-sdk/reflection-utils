@@ -17,10 +17,6 @@
 // <website>https://github.com/facebook-csharp-sdk/ReflectionUtils</website>
 //-----------------------------------------------------------------------
 
-#if SILVERLIGHT || WINDOWS_PHONE || NETFX_CORE
-#undef REFLECTION_UTILS_REFLECTION_EMIT
-#endif
-
 #if NETFX_CORE
 #define REFLECTION_UTILS_TYPEINFO
 #endif
@@ -33,9 +29,6 @@ using System.Linq.Expressions;
 #endif
 using System.Globalization;
 using System.Reflection;
-#if REFLECTION_UTILS_REFLECTIONEMIT
-using System.Reflection.Emit;
-#endif
 
 namespace ReflectionUtils
 {
@@ -47,6 +40,10 @@ namespace ReflectionUtils
  class ReflectionUtils
     {
         private static readonly object[] EmptyObjects = new object[] { };
+
+        public delegate object GetDelegate(object source);
+        public delegate void SetDelegate(object source, object value);
+        public delegate object ConstructorDelegate(params object[] args);
 
         public static Attribute GetAttribute(MemberInfo info, Type type)
         {
@@ -98,11 +95,11 @@ namespace ReflectionUtils
             if (!type.GetTypeInfo().IsGenericType)
                 return false;
 #else
-                if (typeof(IDictionary).IsAssignableFrom(type))
-                    return true;
+            if (typeof(IDictionary).IsAssignableFrom(type))
+                return true;
 
-                if (!type.IsGenericType)
-                    return false;
+            if (!type.IsGenericType)
+                return false;
 #endif
             Type genericDefinition = type.GetGenericTypeDefinition();
             return genericDefinition == typeof(IDictionary<,>);
@@ -114,9 +111,9 @@ namespace ReflectionUtils
 #if NETFX_CORE
                 type.GetTypeInfo().IsGenericType
 #else
-                type.IsGenericType
+ type.IsGenericType
 #endif
-                && type.GetGenericTypeDefinition() == typeof (Nullable<>);
+ && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         public static object ToNullableType(object obj, Type nullableType)
@@ -212,7 +209,7 @@ namespace ReflectionUtils
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
         }
 
-        public static ConstructorDelegate GetConstructor(Type type, params  Type[] argsType)
+        public static ConstructorDelegate GetConstructor(Type type, params Type[] argsType)
         {
             ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
             return constructorInfo == null ? null : GetContructor(constructorInfo);
@@ -247,20 +244,20 @@ namespace ReflectionUtils
 
 #endif
 
-        public static GetHandler GetGetMethod(PropertyInfo propertyInfo)
+        public static GetDelegate GetGetMethod(PropertyInfo propertyInfo)
         {
             MethodInfo methodInfo = GetGetterMethodInfo(propertyInfo);
             return delegate(object source) { return methodInfo.Invoke(source, EmptyObjects); };
         }
 
-        public static GetHandler GetGetMethod(FieldInfo fieldInfo)
+        public static GetDelegate GetGetMethod(FieldInfo fieldInfo)
         {
             return delegate(object source) { return fieldInfo.GetValue(source); };
         }
 
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
 
-        public static GetHandler GetGetMethodByExpression(PropertyInfo propertyInfo)
+        public static GetDelegate GetGetMethodByExpression(PropertyInfo propertyInfo)
         {
             MethodInfo getMethodInfo = GetGetterMethodInfo(propertyInfo);
             ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
@@ -269,30 +266,30 @@ namespace ReflectionUtils
             return delegate(object source) { return compiled(source); };
         }
 
-        public static GetHandler GetGetMethodByExpression(FieldInfo fieldInfo)
+        public static GetDelegate GetGetMethodByExpression(FieldInfo fieldInfo)
         {
             ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
             MemberExpression member = Expression.Field(Expression.Convert(instance, fieldInfo.DeclaringType), fieldInfo);
-            GetHandler compiled = Expression.Lambda<GetHandler>(Expression.Convert(member, typeof(object)), instance).Compile();
+            GetDelegate compiled = Expression.Lambda<GetDelegate>(Expression.Convert(member, typeof(object)), instance).Compile();
             return delegate(object source) { return compiled(source); };
         }
 
 #endif
 
-        public static SetHandler GetSetMethod(PropertyInfo propertyInfo)
+        public static SetDelegate GetSetMethod(PropertyInfo propertyInfo)
         {
             MethodInfo methodInfo = GetSetterMethodInfo(propertyInfo);
             return delegate(object source, object value) { methodInfo.Invoke(source, new object[] { value }); };
         }
 
-        public static SetHandler GetSetMethod(FieldInfo fieldInfo)
+        public static SetDelegate GetSetMethod(FieldInfo fieldInfo)
         {
             return delegate(object source, object value) { fieldInfo.SetValue(source, value); };
         }
 
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
 
-        public static SetHandler GetSetMethodByExpression(PropertyInfo propertyInfo)
+        public static SetDelegate GetSetMethodByExpression(PropertyInfo propertyInfo)
         {
             MethodInfo setMethodInfo = GetSetterMethodInfo(propertyInfo);
             ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
@@ -303,7 +300,7 @@ namespace ReflectionUtils
             return delegate(object source, object val) { compiled(source, val); };
         }
 
-        public static SetHandler GetSetMethodByExpression(FieldInfo fieldInfo)
+        public static SetDelegate GetSetMethodByExpression(FieldInfo fieldInfo)
         {
             ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
             ParameterExpression value = Expression.Parameter(typeof(object), "value");
@@ -334,24 +331,3 @@ namespace ReflectionUtils
 
     }
 }
-
-#if REFLECTION_UTILS_INTERNAL
-    internal
-#else
-public
-#endif
- delegate object GetHandler(object source);
-
-#if REFLECTION_UTILS_INTERNAL
-    internal
-#else
-public
-#endif
- delegate void SetHandler(object source, object value);
-
-#if REFLECTION_UTILS_INTERNAL
-    internal
-#else
-public
-#endif
- delegate object ConstructorDelegate(params object[] args);
