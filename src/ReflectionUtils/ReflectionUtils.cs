@@ -73,6 +73,15 @@ namespace ReflectionUtils
 #endif
         }
 
+        public static Type[] GetGenericTypeArguments(Type type)
+        {
+#if NETFX_CORE
+            return type.GetTypeInfo().GenericTypeArguments;
+#else
+            return type.GetGenericArguments();
+#endif
+        }
+
         public static bool IsTypeGenericeCollectionInterface(Type type)
         {
 #if NETFX_CORE

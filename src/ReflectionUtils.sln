@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010 Express for Windows Phone
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionUtils", "ReflectionUtils\ReflectionUtils.csproj", "{E9512755-2E8A-4FEE-A21A-AF246B10BFAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionUtils-Portable", "ReflectionUtils\ReflectionUtils-Portable.csproj", "{94F83285-648D-44D4-BEFC-7D0A4EC54460}"
