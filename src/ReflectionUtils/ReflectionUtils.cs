@@ -384,7 +384,7 @@ namespace ReflectionUtils
         }
 #endif
 
-        public sealed class ThreadSafeDictionary<TKey, TValue>
+        public sealed class ThreadSafeDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         {
             private readonly object _lock = new object();
             private readonly ThreadSafeDictionaryValueFactory<TKey, TValue> _valueFactory;
@@ -395,7 +395,7 @@ namespace ReflectionUtils
                 _valueFactory = valueFactory;
             }
 
-            public TValue Get(TKey key)
+            private TValue Get(TKey key)
             {
                 if (_dictionary == null)
                     return AddValue(key);
@@ -426,6 +426,87 @@ namespace ReflectionUtils
                     }
                 }
                 return value;
+            }
+
+            public void Add(TKey key, TValue value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool ContainsKey(TKey key)
+            {
+                return _dictionary.ContainsKey(key);
+            }
+
+            public ICollection<TKey> Keys
+            {
+                get { return _dictionary.Keys; }
+            }
+
+            public bool Remove(TKey key)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool TryGetValue(TKey key, out TValue value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ICollection<TValue> Values
+            {
+                get { return _dictionary.Values; }
+            }
+
+            public TValue this[TKey key]
+            {
+                get { return Get(key); }
+                set { throw new NotImplementedException(); }
+            }
+
+            public void Add(KeyValuePair<TKey, TValue> item)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Clear()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool Contains(KeyValuePair<TKey, TValue> item)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int Count
+            {
+                get { return _dictionary.Count; }
+            }
+
+            public bool IsReadOnly
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public bool Remove(KeyValuePair<TKey, TValue> item)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+            {
+                return _dictionary.GetEnumerator();
+            }
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return _dictionary.GetEnumerator();
             }
         }
 
