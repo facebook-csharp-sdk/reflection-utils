@@ -48,7 +48,7 @@ namespace ReflectionUtils
 
         public static Attribute GetAttribute(MemberInfo info, Type type)
         {
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
             if (info == null || type == null || !info.IsDefined(type))
                 return null;
             return info.GetCustomAttribute(type);
@@ -62,7 +62,7 @@ namespace ReflectionUtils
         public static Attribute GetAttribute(Type objectType, Type attributeType)
         {
 
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
             if (objectType == null || attributeType == null || !objectType.GetTypeInfo().IsDefined(attributeType))
                 return null;
             return objectType.GetTypeInfo().GetCustomAttribute(attributeType);
@@ -75,7 +75,7 @@ namespace ReflectionUtils
 
         public static Type[] GetGenericTypeArguments(Type type)
         {
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
             return type.GetTypeInfo().GenericTypeArguments;
 #else
             return type.GetGenericArguments();
@@ -84,7 +84,7 @@ namespace ReflectionUtils
 
         public static bool IsTypeGenericeCollectionInterface(Type type)
         {
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
             if (!type.GetTypeInfo().IsGenericType)
 #else
             if (!type.IsGenericType)
@@ -98,7 +98,7 @@ namespace ReflectionUtils
 
         public static bool IsTypeDictionary(Type type)
         {
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
             if (typeof(IDictionary<,>).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 return true;
 
@@ -118,7 +118,7 @@ namespace ReflectionUtils
         public static bool IsNullableType(Type type)
         {
             return
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
                 type.GetTypeInfo().IsGenericType
 #else
                 type.IsGenericType
@@ -133,7 +133,7 @@ namespace ReflectionUtils
 
         public static bool IsValueType(Type type)
         {
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
             return type.GetTypeInfo().IsValueType;
 #else
             return type.IsValueType;
@@ -207,7 +207,7 @@ namespace ReflectionUtils
 
         public static MethodInfo GetSetterMethodInfo(PropertyInfo propertyInfo)
         {
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
             return propertyInfo.SetMethod;
 #else
             return propertyInfo.GetSetMethod(true);
@@ -375,7 +375,7 @@ namespace ReflectionUtils
 
         public static BinaryExpression Assign(Expression left, Expression right)
         {
-#if NETFX_CORE
+#if REFLECTION_UTILS_TYPEINFO
             return Expression.Assign(left, right);
 #else
             MethodInfo assign = typeof(Assigner<>).MakeGenericType(left.Type).GetMethod("Assign");
@@ -391,6 +391,7 @@ namespace ReflectionUtils
                 return (left = right);
             }
         }
+
 #endif
 
         public sealed class ThreadSafeDictionary<TKey, TValue> : IDictionary<TKey, TValue>
