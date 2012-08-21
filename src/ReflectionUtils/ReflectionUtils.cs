@@ -459,7 +459,8 @@ namespace ReflectionUtils
 
             public bool TryGetValue(TKey key, out TValue value)
             {
-                throw new NotImplementedException();
+                value = this[key];
+                return true;
             }
 
             public ICollection<TValue> Values
