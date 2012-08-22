@@ -96,6 +96,15 @@ namespace ReflectionUtils
             return (genericDefinition == typeof(IList<>) || genericDefinition == typeof(ICollection<>) || genericDefinition == typeof(IEnumerable<>));
         }
 
+        public static bool IsAssignableFrom(Type type1, Type type2)
+        {
+#if REFLECTION_UTILS_TYPEINFO
+            return type1.GetType().GetTypeInfo().IsAssignableFrom(type2.GetTypeInfo());
+#else
+            return type1.IsAssignableFrom(type2);
+#endif
+        }
+
         public static bool IsTypeDictionary(Type type)
         {
 #if REFLECTION_UTILS_TYPEINFO
