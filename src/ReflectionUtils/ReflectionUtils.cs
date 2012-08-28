@@ -17,6 +17,8 @@
 // <website>https://github.com/facebook-csharp-sdk/reflection-utils</website>
 //-----------------------------------------------------------------------
 
+// NOTE: add #define REFLECTION_UTILS_NO_LINQ_EXPRESSION if you want to support .NET<3.0 or WP7.0
+
 #if NETFX_CORE
 #define REFLECTION_UTILS_TYPEINFO
 #endif
