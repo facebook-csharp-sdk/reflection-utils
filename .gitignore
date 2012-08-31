@@ -33,4 +33,5 @@ lint.db
 
 # Misc Ignores
 Thumbs.db
+.DS_Store
 !libs/*/[Bb]in/
