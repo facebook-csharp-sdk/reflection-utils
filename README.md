@@ -14,6 +14,8 @@ and [SimpleJson](https://github.com/facebook-csharp-sdk/simple-json).
 * Windows Phone 7.0
 * Windows Phone 7.1 (Mango)
 * Portable Class Libraries (PCL)
+* Mono
+* MonoTouch
  
 **Note:** For .NET 2.0/3.0 and Windows Phone 7.0 you will need to add `#define REFLECTION_UTILS_NO_LINQ_EXPRESSION`.
 For Windows 8 Store Apps you will need to add `#define NETFX_CORE` (this is already added when you create a new Windows 8 Store App.).
