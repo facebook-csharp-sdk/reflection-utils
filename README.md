@@ -1,5 +1,5 @@
 # ReflectionUtils
-Cross platform helper utils for .NET framework used by [Facebook C# SDK](https://github.com/facebook-csharp-sdk/facebook-csharp-sdk) 
+Cross platform reflection helper utils for .NET framework used by [Facebook C# SDK](https://github.com/facebook-csharp-sdk/facebook-csharp-sdk) 
 and [SimpleJson](https://github.com/facebook-csharp-sdk/simple-json).
 
 ## Supported Platforms
