@@ -16,6 +16,9 @@ obj/
 _ReSharper.*/
 *.resharper.user
 
+# Mono
+*.userprefs
+
 # StyleCop cache ignores
 *StyleCop.Cache
 
@@ -33,4 +36,5 @@ lint.db
 
 # Misc Ignores
 Thumbs.db
+.DS_Store
 !libs/*/[Bb]in/

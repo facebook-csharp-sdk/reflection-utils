@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionUtils.MonoTouch", "ReflectionUtils.MonoTouch\ReflectionUtils.MonoTouch.csproj", "{1C8A42F9-265F-4B12-AE23-D0D646848686}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		AppStore|iPhone = AppStore|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Debug|iPhone.Build.0 = Debug|iPhone
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Debug|x86.ActiveCfg = Debug|iPhoneSimulator
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Debug|x86.Build.0 = Debug|iPhoneSimulator
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Release|iPhone.ActiveCfg = Release|iPhone
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Release|iPhone.Build.0 = Release|iPhone
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Release|x86.ActiveCfg = Release|iPhoneSimulator
+		{1C8A42F9-265F-4B12-AE23-D0D646848686}.Release|x86.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = ReflectionUtils.MonoTouch\ReflectionUtils.MonoTouch.csproj
+	EndGlobalSection
+EndGlobal
