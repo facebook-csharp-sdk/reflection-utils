@@ -28,6 +28,5 @@ namespace ReflectionUtils
             ReflectionUtilsBenchmarks.Run(Console.WriteLine);
             Console.ReadKey();
         }
-
     }
 }
