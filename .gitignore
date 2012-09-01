@@ -17,7 +17,7 @@ _ReSharper.*/
 *.resharper.user
 
 # Mono
-*.Mono.userprefs
+*.userprefs
 
 # StyleCop cache ignores
 *StyleCop.Cache
