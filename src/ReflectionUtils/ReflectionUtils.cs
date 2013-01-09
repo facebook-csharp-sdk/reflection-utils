@@ -24,6 +24,7 @@
 #endif
 
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
 using System.Linq.Expressions;
