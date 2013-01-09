@@ -44,14 +44,16 @@ namespace ReflectionUtils
 #endif
  class ReflectionUtils
     {
+#if REFLECTION_UTILS_DATA_CONTRACT || REFLECTION_UTILS_NO_LINQ_EXPRESSION
         private static readonly object[] EmptyObjects = new object[] { };
 
+#endif
         public delegate object GetDelegate(object source);
         public delegate void SetDelegate(object source, object value);
         public delegate object ConstructorDelegate(params object[] args);
-        
         public delegate TValue ThreadSafeDictionaryValueFactory<TKey, TValue>(TKey key);
 
+#if REFLECTION_UTILS_DATA_CONTRACT
         public static Attribute GetAttribute(MemberInfo info, Type type)
         {
 #if REFLECTION_UTILS_TYPEINFO
@@ -78,7 +80,7 @@ namespace ReflectionUtils
             return Attribute.GetCustomAttribute(objectType, attributeType);
 #endif
         }
-
+#endif
         public static Type[] GetGenericTypeArguments(Type type)
         {
 #if REFLECTION_UTILS_TYPEINFO
@@ -228,7 +230,7 @@ namespace ReflectionUtils
             return propertyInfo.GetSetMethod(true);
 #endif
         }
-
+#if REFLECTION_UTILS_DATA_CONTRACT
         public static ConstructorDelegate GetContructor(ConstructorInfo constructorInfo)
         {
 #if REFLECTION_UTILS_NO_LINQ_EXPRESSION
@@ -237,7 +239,7 @@ namespace ReflectionUtils
             return GetConstructorByExpression(constructorInfo);
 #endif
         }
-
+#endif
         public static ConstructorDelegate GetContructor(Type type, params Type[] argsType)
         {
 #if REFLECTION_UTILS_NO_LINQ_EXPRESSION
@@ -246,7 +248,7 @@ namespace ReflectionUtils
             return GetConstructorByExpression(type, argsType);
 #endif
         }
-
+#if REFLECTION_UTILS_DATA_CONTRACT || REFLECTION_UTILS_NO_LINQ_EXPRESSION
         public static ConstructorDelegate GetConstructorByReflection(ConstructorInfo constructorInfo)
         {
             return delegate(object[] args) { return constructorInfo.Invoke(args); };
@@ -257,7 +259,7 @@ namespace ReflectionUtils
             ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
             return constructorInfo == null ? null : GetConstructorByReflection(constructorInfo);
         }
-
+#endif
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
 
         public static ConstructorDelegate GetConstructorByExpression(ConstructorInfo constructorInfo)
@@ -304,7 +306,7 @@ namespace ReflectionUtils
             return GetGetMethodByExpression(fieldInfo);
 #endif
         }
-
+#if REFLECTION_UTILS_DATA_CONTRACT || REFLECTION_UTILS_NO_LINQ_EXPRESSION
         public static GetDelegate GetGetMethodByReflection(PropertyInfo propertyInfo)
         {
             MethodInfo methodInfo = GetGetterMethodInfo(propertyInfo);
@@ -315,7 +317,7 @@ namespace ReflectionUtils
         {
             return delegate(object source) { return fieldInfo.GetValue(source); };
         }
-
+#endif
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
 
         public static GetDelegate GetGetMethodByExpression(PropertyInfo propertyInfo)
@@ -354,7 +356,7 @@ namespace ReflectionUtils
             return GetSetMethodByExpression(fieldInfo);
 #endif
         }
-
+#if REFLECTION_UTILS_DATA_CONTRACT || REFLECTION_UTILS_NO_LINQ_EXPRESSION
         public static SetDelegate GetSetMethodByReflection(PropertyInfo propertyInfo)
         {
             MethodInfo methodInfo = GetSetterMethodInfo(propertyInfo);
@@ -365,7 +367,7 @@ namespace ReflectionUtils
         {
             return delegate(object source, object value) { fieldInfo.SetValue(source, value); };
         }
-
+#endif
 #if !REFLECTION_UTILS_NO_LINQ_EXPRESSION
 
         public static SetDelegate GetSetMethodByExpression(PropertyInfo propertyInfo)
