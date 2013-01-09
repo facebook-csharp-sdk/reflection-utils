@@ -55,6 +55,7 @@ namespace ReflectionUtils
 
         private static void GetConstructorByReflection()
         {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
             var cache =
                 new ReflectionUtils.ThreadSafeDictionary<Type, ReflectionUtils.ConstructorDelegate>(
                     type => ReflectionUtils.GetConstructorByReflection(type));
@@ -76,6 +77,7 @@ namespace ReflectionUtils
                     var obj = cache[typeof(SimpleClass)]();
                 }
             }
+#endif
         }
 
         private static void GetConstructorByExpression()
@@ -107,6 +109,7 @@ namespace ReflectionUtils
 
         private static void GetPropertyByReflection()
         {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
             var cache =
                 new ReflectionUtils.ThreadSafeDictionary<PropertyInfo, ReflectionUtils.GetDelegate>(
                     ReflectionUtils.GetGetMethodByReflection);
@@ -132,6 +135,7 @@ namespace ReflectionUtils
                     var value = getter(obj);
                 }
             }
+#endif
         }
 
         private static void GetPropertyByExpression()
@@ -167,6 +171,7 @@ namespace ReflectionUtils
 
         private static void SetPropertyByReflection()
         {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
             var cache =
                 new ReflectionUtils.ThreadSafeDictionary<PropertyInfo, ReflectionUtils.SetDelegate>(
                     ReflectionUtils.GetSetMethodByReflection);
@@ -192,6 +197,7 @@ namespace ReflectionUtils
                     setter(obj, "val");
                 }
             }
+#endif
         }
 
         private static void SetPropertyByExpression()
@@ -227,6 +233,7 @@ namespace ReflectionUtils
 
         private static void GetFieldByReflection()
         {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
             var cache =
                 new ReflectionUtils.ThreadSafeDictionary<FieldInfo, ReflectionUtils.GetDelegate>(
                     ReflectionUtils.GetGetMethodByReflection);
@@ -252,6 +259,7 @@ namespace ReflectionUtils
                     var value = getter(obj);
                 }
             }
+#endif
         }
 
         private static void GetFieldByExpression()
@@ -287,6 +295,7 @@ namespace ReflectionUtils
 
         private static void SetFieldByReflection()
         {
+#if REFLECTION_UTILS_NO_LINQ_EXPRESSION
             var cache =
                 new ReflectionUtils.ThreadSafeDictionary<FieldInfo, ReflectionUtils.SetDelegate>(
                     ReflectionUtils.GetSetMethodByReflection);
@@ -312,6 +321,7 @@ namespace ReflectionUtils
                     setter(obj, "val");
                 }
             }
+#endif
         }
 
         private static void SetFieldByExpression()
