@@ -196,7 +196,17 @@ namespace ReflectionUtils
         public static IEnumerable<PropertyInfo> GetProperties(Type type)
         {
 #if REFLECTION_UTILS_TYPEINFO
-            return type.GetTypeInfo().DeclaredProperties;
+            var typeInfo = type.GetTypeInfo();
+            var properties = typeInfo.DeclaredProperties;
+
+            if (typeInfo.BaseType == null)
+                return properties;
+
+            if (typeInfo.BaseType.FullName == typeof (Object).FullName)
+                return properties;
+
+            var baseProperties = GetProperties(typeInfo.BaseType);
+            return System.Linq.Enumerable.Concat(properties, baseProperties);
 #else
             return type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 #endif
