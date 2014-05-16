@@ -202,6 +202,15 @@ namespace ReflectionUtils
 #endif
         }
 
+        public static PropertyInfo GetProperty(Type type, string name)
+        {
+#if REFLECTION_UTILS_TYPEINFO
+            return type.GetTypeInfo().GetDeclaredProperty(name);
+#else
+            return type.GetProperty(name);
+#endif
+        }
+
         public static IEnumerable<FieldInfo> GetFields(Type type)
         {
 #if REFLECTION_UTILS_TYPEINFO
